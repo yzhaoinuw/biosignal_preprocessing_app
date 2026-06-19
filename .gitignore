@@ -1,0 +1,42 @@
+# MATLAB generated files
+*.asv
+*.autosave
+slprj/
+codegen/
+
+# MATLAB data and generated outputs
+*.mat
+*.fig
+*.xlsx
+*.xls
+*.csv
+
+# Raw TDT recordings
+*.Tbk
+*.Tdx
+*.tev
+*.tin
+*.tnt
+*.tsq
+
+# Viewpoint, Sirenia, and related recording files
+*.exp
+*.edf
+*.bin
+*.idx
+*.act
+*.avi
+
+# Local reports and reference artifacts
+*.pptx
+*.docx
+*.pdf
+
+# Local data/output directories
+results/
+user_test_data/
+event_analysis_sleep_transitions/
+
+# OS metadata
+desktop.ini
+.DS_Store
