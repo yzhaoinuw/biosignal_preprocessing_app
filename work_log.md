@@ -8,6 +8,15 @@ If today's date is already at the top, add another `###` session subsection bene
 
 ## 2026-06-19
 
+### Switch to the tri-color treaty badge and publish to main (Codex, GPT-5)
+
+- Replaced the single-color shields.io treaty badge with the centrally hosted tri-color SVG.
+- Published the badge follow-up on `dev`, then fast-forwarded `main` to the complete App Designer version-control workflow.
+- Verification:
+  - `treaty validate .`
+  - `git diff --check`
+  - confirmed `dev` and `main` remote refs after push
+
 ### Add App Designer source export and Git synchronization (Codex, GPT-5)
 
 - Added the Agent Collab Treaty adoption badge to the user-facing README.
