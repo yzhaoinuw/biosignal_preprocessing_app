@@ -63,6 +63,8 @@ classdef app_exported < matlab.apps.AppBase
         subjectID = ''
         TDTDir = ''
         EEGPath = ''
+        TDTData = []
+        loadedTDTDir = ''
         isosbesticChannels
         channelInfo
         nChannel
@@ -221,13 +223,7 @@ classdef app_exported < matlab.apps.AppBase
             end
         end
 
-        function signalsCorrected = process_fp_signals(app)
-            TDTData = read_TDT_files(app);
-            display_TDT_channels(app, TDTData)
-
-            app.waitingForInput = true;
-            waitfor(app, 'waitingForInput', false);
-
+        function signalsCorrected = process_fp_signals(app, TDTData)
             ttlChannel = app.TTLChannelDropDown.Value;
             app.ttlOnset = get_fp_onset(TDTData, ttlChannel);
 
@@ -275,6 +271,24 @@ classdef app_exported < matlab.apps.AppBase
         end
 
 
+        function [] = process_selected_data(app)
+            if ~isempty(app.TDTDir)
+                app.signalsCorrected = process_fp_signals(app, app.TDTData);
+                app.ProgressTextArea.Value{end+1} = 'Done processing data from TDT.';
+                drawnow
+            end
+
+            if ~isempty(app.EEGPath)
+                app.ProgressTextArea.Value{end+1} = 'Processing data from Viewpoint...';
+                drawnow
+                [app.eeg, app.emg] = process_viewpoint_data(app);
+                app.ProgressTextArea.Value{end+1} = 'Done processing data from Viewpoint.';
+            end
+            app.SaveFileButton.Enable = 'on';
+            app.SaveFileButton.Visible = 'on';
+        end
+
+
         function [eeg, emg] = process_viewpoint_data(app)
             [viewpointData, info] = read_viewpoint_data(app.EEGPath);
             app.eegFrequency = info.Fs;
@@ -307,6 +321,8 @@ classdef app_exported < matlab.apps.AppBase
         function [] = reset_app(app)
             app.TDTDir = '';
             app.EEGPath = '';
+            app.TDTData = [];
+            app.loadedTDTDir = '';
             app.HomePanel.Visible = 'on';
             app.ContinueButton.Enable = 'off';
             app.SaveFileButton.Enable = 'off';
@@ -415,39 +431,33 @@ classdef app_exported < matlab.apps.AppBase
             app.ProgressPanel.Visible = "on";
             app.ProgressTextArea.Value = {'Processing...'};
             drawnow;
-            app.waitingForInput = false;
-
+            process_selected_data(app);
         end
 
         % Button pushed function: ContinueButton
         function ContinueButtonPushed(app, event)
             app.HomePanel.Visible = 'off';
-            message = {'Reading TDT data... This may take a minute.'};
-            app.ProgressTextArea.Value = message;
             app.ProgressPanel.Visible = 'on';
-            %app.ContinueButton.Enable = "off";
-            drawnow; % must do drawnow to force update the app to see the page turn
 
             if ~isempty(app.TDTDir)
-                %read_TDT_files(app)
-                %display_TDT_channels(app)
-                app.signalsCorrected = process_fp_signals(app);
-                app.ProgressTextArea.Value{end+1} = 'Done processing data from TDT.';
-                drawnow
+                pathChanged = isempty(app.loadedTDTDir) || ...
+                    ~strcmpi(app.TDTDir, app.loadedTDTDir);
+                if pathChanged || isempty(app.TDTData)
+                    app.ProgressTextArea.Value = {'Reading TDT data... This may take a minute.'};
+                    drawnow;
+                    app.TDTData = read_TDT_files(app);
+                    app.loadedTDTDir = app.TDTDir;
+                    display_TDT_channels(app, app.TDTData);
+                else
+                    app.ProgressPanel.Visible = 'off';
+                    app.TDTBiosignalsPanel.Visible = 'on';
+                end
+                return
             end
 
-            if ~isempty(app.EEGPath) % only EEG/EMG from Viewpoint or Sirenia is given
-                if isempty(app.ProgressTextArea.Value)
-                    app.ProgressTextArea.Value = {'Processing data from Viewpoint...'};
-                else
-                    app.ProgressTextArea.Value{end+1} = 'Processing data from Viewpoint...';
-                end
-                drawnow
-                [app.eeg, app.emg] = process_viewpoint_data(app);
-                app.ProgressTextArea.Value{end+1} = 'Done processing data from Viewpoint.';
-            end
-            app.SaveFileButton.Enable = 'on';
-            app.SaveFileButton.Visible = 'on';
+            app.ProgressTextArea.Value = {'Processing data...'};
+            drawnow;
+            process_selected_data(app);
         end
 
         % Button pushed function: SaveFileButton

@@ -4,7 +4,13 @@ Use this file with `work_log.md`. Remove completed items instead of letting this
 
 ## Currently Hot
 
-- No active engineering thread. Add the next concrete task here when work resumes.
+- Manually smoke-test the updated Home/TDT navigation with local data:
+  - unchanged TDT folder after Back should reopen the TDT panel immediately
+  - subject-ID-only edits should not re-read TDT data
+  - a changed TDT folder should trigger a fresh read
+  - TDT plus Viewpoint input should still process both sources after the TDT-panel Continue
+  - mixed-case signal names should appear lowercase after TDT-panel Continue
+  - colliding names such as `GCaMP`/`gcamp` or `a-b`/`a_b` should be rejected
 
 ## Completed: App Designer Source-Control Workflow
 

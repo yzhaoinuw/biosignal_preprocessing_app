@@ -8,6 +8,34 @@ If today's date is already at the top, add another `###` session subsection bene
 
 ## 2026-06-19
 
+### Normalize TDT signal names before processing (Codex, GPT-5)
+
+- TDT signal names are now trimmed and converted to lowercase when the user continues from the biosignals panel.
+- The normalized names are written back to the visible edit fields so the saved naming is explicit.
+- Added validation that blocks processing when two entries would become the same saved MATLAB field name after sanitization.
+- Clear previously captured names before each validation attempt so correcting a rejected entry cannot retain stale state.
+- Verification:
+  - confirmed `GCaMP` and `gcamp` collide after normalization
+  - confirmed `a-b` and `a_b` collide after field-name sanitization
+  - confirmed distinct names such as `signal one` and `signal two` remain distinct
+  - `matlab -batch "export_app_source('verify')"`
+  - MATLAB Code Analyzer returned the same nine pre-existing warnings
+  - `git diff --check`
+
+### Reuse loaded TDT data after returning to Home (Codex, GPT-5)
+
+- Cached the loaded TDT block together with the source folder used to create it.
+- Returning from the TDT biosignals panel to Home no longer leaves a suspended processing callback.
+- Home Continue now reuses the cached TDT block when the folder is unchanged, preserving the current TDT-panel choices.
+- Changing only the subject ID updates the displayed ID without re-reading TDT data; changing the TDT folder triggers a fresh read.
+- Kept Viewpoint processing in the final processing phase because that file has not yet been read when the user returns from the TDT panel.
+- Cleared the TDT cache when the app resets after saving.
+- Verification:
+  - `matlab -batch "export_app_source; export_app_source('verify')"`
+  - `matlab -batch "issues=checkcode('app_exported.m','-id')"` returned the same nine pre-existing warnings
+  - `git diff --check`
+  - manual local-data smoke testing remains pending
+
 ### Switch to the tri-color treaty badge and publish to main (Codex, GPT-5)
 
 - Replaced the single-color shields.io treaty badge with the centrally hosted tri-color SVG.
