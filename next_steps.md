@@ -4,7 +4,7 @@ Use this file with `work_log.md`. Remove completed items instead of letting this
 
 ## Currently Hot
 
-- Manually smoke-test the updated Home/TDT navigation with local data:
+- Manually smoke-test the updated Home/TDT navigation and signal-name validation with local data. The code path is implemented; this is the remaining local-data confirmation:
   - unchanged TDT folder after Back should reopen the TDT panel immediately
   - subject-ID-only edits should not re-read TDT data
   - a changed TDT folder should trigger a fresh read

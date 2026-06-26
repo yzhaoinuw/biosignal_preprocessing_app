@@ -159,6 +159,7 @@ Do not delete or untrack existing files without explicit user approval. Adding a
 - `app.mlapp` opens and the affected workflow has been checked when the app changed.
 - Changed standalone `.m` functions pass an appropriate `checkcode` review.
 - `app_exported.m` matches `app.mlapp`.
+- Every user-facing behavior claimed in the final answer, work log, next steps, or commit message is visible in the final diff or verified with a behavior-specific check. For App Designer work, `export_app_source('verify')` proves only that `app_exported.m` matches `app.mlapp`; it does not prove the requested behavior exists. Inspect `app_exported.m` for concrete callback/helper changes before claiming them.
 - No raw data, generated results, cache files, or workstation-specific paths are staged.
 - The diff contains only the requested scope.
 - `work_log.md` has a new entry for substantive work.
@@ -195,3 +196,5 @@ The live work log holds at most five unique calendar dates. When a sixth date is
 Use a short title. If a commit contains multiple user-requested changes, add a short body with flat bullets describing high-level behavior.
 
 Do not mention tests, documentation, or internal implementation details in a feature commit unless those items are themselves the purpose of the commit.
+
+Before committing, compare the commit message against the staged diff. If a bullet describes behavior, the staged source must contain that behavior; do not use the commit message to describe intended, planned, or only-documented work.

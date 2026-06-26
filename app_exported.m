@@ -167,19 +167,32 @@ classdef app_exported < matlab.apps.AppBase
             app.TDTBiosignalsPanel.Visible = 'on';
         end
 
-        function signalNamesAdded = add_signal_names(app)
+        function [signalNamesAdded, signalNamesUnique] = add_signal_names(app)
             signalNamesAdded = false;
+            signalNamesUnique = true;
+            signalNames = strings(numel(app.channelIndex), 1);
+            nSignalNames = 0;
             for k = 1:numel(app.channelIndex)
                 L = app.channelIndex{k};
                 editFieldName = sprintf('Signal%sNameEditField', L);
                 checkBoxName = sprintf('Invert%sCheckBox', L);
-                sigName = app.(editFieldName).Value;
+                sigName = char(lower(strtrim(string(app.(editFieldName).Value))));
                 invert = app.(checkBoxName).Value;
+                app.channelInfo.signalName(L) = missing;
+                app.channelInfo.invert(L) = invert;
+                app.(editFieldName).Value = sigName;
                 if ~isempty(sigName)
                     app.channelInfo.signalName(L) = sigName;
-                    app.channelInfo.invert(L) = invert;
                     signalNamesAdded = true;
+                    nSignalNames = nSignalNames + 1;
+                    signalNames(nSignalNames) = sigName;
                 end
+            end
+
+            if signalNamesAdded
+                signalNames = signalNames(1:nSignalNames);
+                formattedSignalNames = sanitizeSignalNames(signalNames);
+                signalNamesUnique = numel(unique(formattedSignalNames)) == numel(formattedSignalNames);
             end
         end
 
@@ -407,12 +420,16 @@ classdef app_exported < matlab.apps.AppBase
 
         % Button pushed function: ContinueButton2
         function ContinueButton2Pushed(app, event)
-            signalNameAdded = add_signal_names(app);
+            [signalNameAdded, signalNamesUnique] = add_signal_names(app);
             title = 'Error';
             if ~signalNameAdded
                 message = 'Please name at least one signal. Unnamed signals will not be saved.';
                 uialert(app.UIFigure, message, title);
-                add_signal_names(app);
+                return
+            end
+            if ~signalNamesUnique
+                message = 'Signal names must be unique after formatting.';
+                uialert(app.UIFigure, message, title);
                 return
             end
 
