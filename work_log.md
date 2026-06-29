@@ -6,6 +6,16 @@ The live log holds at most five unique calendar dates. When a new date would pus
 
 If today's date is already at the top, add another `###` session subsection beneath it instead of creating a duplicate date heading.
 
+## 2026-06-29
+
+### Document pipeline merge plan against preprocess_sleep_data (Codex, GPT-5)
+
+- Added `biosignal_preprocessing_pipeline_merge_guide.md` to compare the app pipeline with `preprocess_sleep_data`.
+- Documented the shared Viewpoint, TDT, FP correction, and synchronization flow; the main drift in extraction windows, TTL trimming, downsampling, metadata, and output contracts; and a prioritized merge path.
+- Verification:
+  - reviewed `biosignal_preprocessing_pipeline_merge_guide.md` for the requested sections
+  - `git diff --check`
+
 ## 2026-06-26
 
 ### Repair TDT signal-name normalization and verification rules (Codex, GPT-5)

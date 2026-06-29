@@ -11,6 +11,10 @@ Use this file with `work_log.md`. Remove completed items instead of letting this
   - TDT plus Viewpoint input should still process both sources after the TDT-panel Continue
   - mixed-case signal names should appear lowercase after TDT-panel Continue
   - colliding names such as `GCaMP`/`gcamp` or `a-b`/`a_b` should be rejected
+- Use `biosignal_preprocessing_pipeline_merge_guide.md` as the roadmap for converging the app with `preprocess_sleep_data`. The highest-priority implementation items are:
+  - port single-bin Viewpoint extraction duration handling
+  - make Viewpoint TTL trimming conditional on mixed-source synchronization
+  - preserve app FP signal-name validation while adding Sleep Scoring compatible output fields
 
 ## Completed: App Designer Source-Control Workflow
 
